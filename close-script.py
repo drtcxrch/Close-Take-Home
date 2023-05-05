@@ -114,7 +114,7 @@ contacts_csv = 'Customer Support Engineer Take Home Project - Import File - MOCK
 # Data object copied from filtering on desktop Close app within leads, then clicking on the
 #three 'more' dots and selecting 'Copy Filters'.
 
-def get_filtered_leads():
+def get_filtered_lead_ids():
   filtered = api.post('/data/search/', data={
       "_limit": 200,
       "include_counts": True,
@@ -182,9 +182,9 @@ def get_filtered_leads():
 
   return leads
 
-lead_ids = get_filtered_leads()
+lead_ids = get_filtered_lead_ids()
 
-# Function to fetch filtered leads
+# Function to fetch filtered leads with id's obtained in last step
 def fetch_filtered_leads(leads):
   results = []
   for lead in leads:
@@ -195,6 +195,23 @@ def fetch_filtered_leads(leads):
 
   return results
 
-
 leads = fetch_filtered_leads(lead_ids)
 
+# Format the leads to keep just the required data
+def format_leads(data):
+  leads = []
+
+  for lead in data:
+    formatted_lead = {}
+    revenue = lead["custom"].get("Company Revenue")
+    #Confirm that we have state and revenue data from the lead and move on if we don't
+    if len(lead["addresses"]) == 0 or revenue is None:
+      continue
+    formatted_lead["US State"] = lead["addresses"][0]["state"]
+    formatted_lead["Lead"] = lead["display_name"]
+    formatted_lead["Revenue"] = lead["custom"]["Company Revenue"]
+    leads.append(formatted_lead)
+  return leads
+
+formatted = format_leads(leads)
+print(formatted)
