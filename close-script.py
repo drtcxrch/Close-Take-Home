@@ -4,6 +4,7 @@ import os
 import csv
 import json
 import re
+import math
 
 load_dotenv()
 api_key = os.getenv("API_KEY")
@@ -214,4 +215,48 @@ def format_leads(data):
   return leads
 
 formatted = format_leads(leads)
-print(formatted)
+
+# Compile data for output before generating csv
+def create_lead_output(data):
+  analyzed = {}
+  for lead in data:
+    state_exists = analyzed.get(lead["US State"])
+    if state_exists is None:
+      analyzed[lead["US State"]] = {
+        "US State": lead["US State"],
+        "Total revenue": lead["Revenue"],
+        "Highest lead": lead["Lead"],
+        "Highest revenue": lead["Revenue"],
+        "All state revenues": [lead["Revenue"]]
+      }
+    else:
+      analyzed[lead["US State"]]["Total revenue"] += lead["Revenue"]
+      if lead["Revenue"] > analyzed[lead["US State"]]["Highest revenue"]:
+        analyzed[lead["US State"]]["Highest revenue"] = lead["Revenue"]
+        analyzed[lead["US State"]]["Highest lead"] = lead["Lead"]
+      analyzed[lead["US State"]]["All state revenues"].append(lead["Revenue"])
+
+  return analyzed
+
+analyzed = create_lead_output(formatted)
+
+# Find the median revenue from each state:
+def get_median_revenue(data):
+  state_list = []
+  for state in data:
+    revenues = data[state]["All state revenues"]
+    revenues.sort()
+    length = len(revenues) - 1
+    if length % 2 == 1:
+      mid1 = revenues[math.floor(length / 2)]
+      mid2 = revenues[math.ceil(length / 2)]
+      median = (mid1 + mid2) / 2
+      data[state]["Median revenue"] = median
+    else:
+      median = revenues[int(length / 2)]
+      data[state]["Median revenue"] = median
+    del data[state]["All state revenues"]
+    state_list.append(data[state])
+  return state_list
+
+completed = get_median_revenue(analyzed)
