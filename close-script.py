@@ -11,6 +11,8 @@ api = Client(api_key)
 contacts_csv = 'Customer Support Engineer Take Home Project - Import File - MOCK_DATA.csv'
 leads = 'leads.json'
 
+# Portion of script that formats csv data and uploads to Close
+#===========================================================================
 # Create custom fields for Company Founded and Company Revenue
 
 company_founded = api.post('/custom_field/lead/', data={
@@ -23,10 +25,10 @@ company_revenue = api.post('/custom_field/lead/', data={
     "type": "number"
 })
 
-company_founded_id = company_founded["id"]
-company_revenue_id = company_revenue["id"]
+company_founded_id = 'custom.' + company_founded["id"]
+company_revenue_id = 'custom.' + company_revenue["id"]
 
-# Validates phone number format
+# # Validates phone number format
 def is_valid_phone_number(phone_number):
     pattern = re.compile(r'^\d{3}-\d{3}-\d{4}$')
     return pattern.match(phone_number) is not None
