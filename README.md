@@ -14,7 +14,6 @@ API_KEY='put you api key here'
 Install Close Python wrapper:
 pip install closeio
 
-Install Email validator:
-pip install validate_email
-Install Phone Number validator:
-pip install phonenumbers
+Install package to convert state abbrevations to state name:
+pip install us
+
