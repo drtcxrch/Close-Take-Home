@@ -40,6 +40,25 @@ def is_valid_email(email):
     regex = re.compile(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$')
     return regex.match(email) is not None
 
+def format_emails(emails):
+    email_list = []
+    has_comma = len(emails.split(',')) > 1
+    has_semicolon = len(emails.split(';')) > 1
+    has_line_break = len(emails.split('\n')) > 1
+    if has_comma == True:
+       email_list = emails.split(',')
+    elif has_semicolon == True:
+      email_list = emails.split(';')
+    elif has_line_break:
+      email_list = emails.split('\n')
+    else:
+       email_list.append(emails)
+    formatted_emails = []
+    for email in email_list:
+      if is_valid_email(email):
+        formatted_emails.append({"email": email})
+    return formatted_emails
+
 # Function to convert a CSV to JSON
 # Takes the file paths as arguments
 def csv_to_close(csvFilePath):
@@ -65,12 +84,12 @@ def csv_to_close(csvFilePath):
             elif col_name == 'Contact Name' and value != '':
               contact["name"] = value
             elif col_name == 'Contact Emails' and value != '':
-              #check if email is in valid format:
-              valid_email = is_valid_email(value)
-              if valid_email == True:
-                contact["emails"] = [{"email": value}]
-              else:
+              formatted = format_emails(value)
+              if len(formatted) == 0:
                 continue
+              else:
+                contact["emails"] = format_emails(value)
+              print(contact)
             elif col_name == 'Contact Phones' and value != '':
               #check if phone is in valid format:
               valid_phone = is_valid_phone_number(value)
