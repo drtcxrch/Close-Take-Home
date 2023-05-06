@@ -224,16 +224,18 @@ def create_lead_output(data):
     if state_exists is None:
       analyzed[lead["US State"]] = {
         "US State": lead["US State"],
+        "Total number of leads": 1,
         "Total revenue": lead["Revenue"],
-        "Highest lead": lead["Lead"],
+        "The lead with most revenue": lead["Lead"],
         "Highest revenue": lead["Revenue"],
         "All state revenues": [lead["Revenue"]]
       }
     else:
       analyzed[lead["US State"]]["Total revenue"] += lead["Revenue"]
+      analyzed[lead["US State"]]["Total number of leads"] += 1
       if lead["Revenue"] > analyzed[lead["US State"]]["Highest revenue"]:
         analyzed[lead["US State"]]["Highest revenue"] = lead["Revenue"]
-        analyzed[lead["US State"]]["Highest lead"] = lead["Lead"]
+        analyzed[lead["US State"]]["The lead with most revenue"] = lead["Lead"]
       analyzed[lead["US State"]]["All state revenues"].append(lead["Revenue"])
 
   return analyzed
@@ -256,7 +258,18 @@ def get_median_revenue(data):
       median = revenues[int(length / 2)]
       data[state]["Median revenue"] = median
     del data[state]["All state revenues"]
+    del data[state]["Highest revenue"]
     state_list.append(data[state])
   return state_list
 
 completed = get_median_revenue(analyzed)
+
+# Write to a csv
+def write_csv(data):
+  header_list = ['US State', 'Total number of leads', 'The lead with most revenue', 'Total revenue', 'Median revenue']
+  output_file = open("output.csv", "x")
+  with open('output.csv', "w", encoding='utf-8') as csvf:
+    csvWriter = csv.DictWriter(csvf, delimiter=',', fieldnames=header_list)
+    csvWriter.writeheader()
+    csvWriter.writerows(data)
+write_csv(completed)
