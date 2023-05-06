@@ -8,11 +8,11 @@ api = Client(api_key)
 
 # Run this script to delete custom fields:
 
-# custom_fields = api.get('/custom_field/lead/')
+custom_fields = api.get('/custom_field/lead/')
 
-# fields = custom_fields["data"]
-# for field in fields:
-#   api.delete('/custom_field/lead/' + field["id"])
+fields = custom_fields["data"]
+for field in fields:
+  api.delete('/custom_field/lead/' + field["id"])
 
-# deleted = api.get('/custom_field/lead/')
-# print(deleted)
+deleted = api.get('/custom_field/lead/')
+print(deleted)
