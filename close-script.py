@@ -30,16 +30,12 @@ company_founded_id = company_founded["id"]
 custom_company_founded_id = 'custom.' + company_founded["id"]
 custom_company_revenue_id = 'custom.' + company_revenue["id"]
 
-# # Validates phone number format
-def is_valid_phone_number(phone_number):
-    pattern = re.compile(r'^\d{3}-\d{3}-\d{4}$')
-    return pattern.match(phone_number) is not None
-
-#Validates email format
+# Validates email format
 def is_valid_email(email):
     regex = re.compile(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$')
     return regex.match(email) is not None
 
+# Some of the emails are concatenated strings. This puts them in a list and checks that they're valid
 def format_emails(emails):
     email_list = []
     has_comma = len(emails.split(',')) > 1
@@ -58,6 +54,21 @@ def format_emails(emails):
       if is_valid_email(email):
         formatted_emails.append({"email": email})
     return formatted_emails
+
+def format_phone_numbers(phone_numbers):
+    phone_list = []
+    has_line_break = len(phone_numbers.split('\n')) > 1
+    if has_line_break == True:
+      phone_list = phone_numbers.split('\n')
+    else:
+      phone_list.append(phone_numbers)
+    formatted_phone_numbers = []
+    for number in phone_list:
+      #US numbers as appear on the csv should be reachable with the last 10 digits (plus 2 dashes)
+      stripped = number[-12:]
+      if len(number[-12:]) == 12:
+        formatted_phone_numbers.append({"phone": stripped})
+    return formatted_phone_numbers
 
 # Function to convert a CSV to JSON
 # Takes the file paths as arguments
@@ -88,15 +99,13 @@ def csv_to_close(csvFilePath):
               if len(formatted) == 0:
                 continue
               else:
-                contact["emails"] = format_emails(value)
-              print(contact)
+                contact["emails"] = formatted
             elif col_name == 'Contact Phones' and value != '':
-              #check if phone is in valid format:
-              valid_phone = is_valid_phone_number(value)
-              if valid_phone == True:
-                contact["phones"] = [{"phone": value}]
-              else:
+              formatted_numbers = format_phone_numbers(value)
+              if len(formatted_numbers) == 0:
                 continue
+              else:
+                contact["phones"] = formatted_numbers
             elif col_name == 'custom.Company Founded' and value != '':
               lead[custom_company_founded_id] = value
             elif col_name == 'custom.Company Revenue' and value != '':
@@ -293,4 +302,5 @@ def write_csv(data):
     csvWriter = csv.DictWriter(csvf, delimiter=',', fieldnames=header_list)
     csvWriter.writeheader()
     csvWriter.writerows(data)
+    print('Check file tree for output.csv file!')
 write_csv(completed)
