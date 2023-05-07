@@ -16,10 +16,10 @@ Leads were segmented by state by saving them to a data structure in Python, the 
 Look for the green box that says "Code" near the upper left hand corner of the Github page that contains this README, click on it and copy the url that is revealed. Then open a terminal and write `git clone <paste link here>`. From there, type `cd <file containing link>` and once you're in the directory that contains the script, enter `code .` in the terminal and your code editor should open and give you access to the script.
 
 ## Once the repository is cloned, create a file so that you don't push your API key to Github:
-run `pip install python-dotenv`
-Create a .env file by running `touch .env`
-in your .env file, store your API key as:
-  `API_KEY=<put you api key here>`
+* run `pip install python-dotenv`
+* Create a .env file by running `touch .env`
+* in your .env file, store your API key as:
+* `API_KEY=<put you api key here>`
 
 ## Install Close Python wrapper:
 `pip install closeio`
