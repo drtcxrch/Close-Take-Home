@@ -97,7 +97,7 @@ def csv_to_close(csvFilePath):
             if col_name == 'Company' and value != '':
               lead["name"] = value
             elif col_name == 'Contact Name' and value != '':
-              contact["name"] = value
+              contact["name"] = value.title()
             elif col_name == 'Contact Emails' and value != '':
               formatted = format_emails(value)
               if len(formatted) == 0:
