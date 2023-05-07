@@ -273,8 +273,8 @@ def create_lead_output(data):
   return analyzed
 
 analyzed = create_lead_output(formatted)
-# Convert state abbrevation to state name:
 
+# Convert state abbrevation to state name:
 def get_state_name(abbreviation):
   return us.states.lookup(abbreviation)
 
