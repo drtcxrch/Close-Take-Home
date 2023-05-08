@@ -38,7 +38,7 @@ def is_valid_email(email):
     regex = re.compile(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$')
     return regex.match(email) is not None
 
-# Some of the emails are concatenated strings. This puts them in a list and checks that they're valid
+# Some of the emails and phone numbers are concatenated strings. This puts them in a list and checks that they're valid
 def format_emails(emails):
     email_list = []
     has_comma = len(emails.split(',')) > 1
@@ -272,7 +272,7 @@ def create_lead_output(data):
 
 analyzed = create_lead_output(formatted)
 
-# Convert state abbrevation to state name:
+# Convert state abbreviation to state name:
 def get_state_name(abbreviation):
   return us.states.lookup(abbreviation)
 
