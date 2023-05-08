@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 from closeio_api import Client
 import os
 import csv
-import json
 import re
 import math
 #Package for formatting floats as currency
@@ -74,8 +73,7 @@ def format_phone_numbers(phone_numbers):
         formatted_phone_numbers.append({"phone": stripped})
     return formatted_phone_numbers
 
-# Function to convert a CSV to JSON
-# Takes the file paths as arguments
+# Function to convert a CSV to a dictionary that is readable for the Close API
 def csv_to_close(csvFilePath):
 
     # create a dictionary that will store all of the formatted data
